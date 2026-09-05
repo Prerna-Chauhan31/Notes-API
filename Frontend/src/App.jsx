@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [notes, setNotes] = useState([]);
 
@@ -17,7 +19,7 @@ function App() {
 
   // GET ALL NOTES
   const fetchNotes = () => {
-    fetch("http://127.0.0.1:8000/notes")
+    fetch(`${API_URL}/notes`)
       .then((response) => response.json())
       .then((data) => {
         setNotes(data.notes);
@@ -28,37 +30,37 @@ function App() {
     fetchNotes();
   }, []);
 
-  //CREATE NOTE
+  // CREATE NOTE
   const createNote = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (title.trim() === "" && content.trim() === "") {
-    alert("Please enter a title or content.");
-    return;
-  }
+    if (title.trim() === "" && content.trim() === "") {
+      alert("Please enter a title or content.");
+      return;
+    }
 
-  fetch("http://127.0.0.1:8000/notes", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      title: title,
-      content: content,
-    }),
-  })
-    .then((response) => response.json())
-    .then(() => {
-      setTitle("");
-      setContent("");
-      setShowForm(false);
-      fetchNotes();
-    });
-};
+    fetch(`${API_URL}/notes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        content: content,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setTitle("");
+        setContent("");
+        setShowForm(false);
+        fetchNotes();
+      });
+  };
 
   // READ ONE
   const readNote = (noteId) => {
-    fetch(`http://127.0.0.1:8000/notes/${noteId}`)
+    fetch(`${API_URL}/notes/${noteId}`)
       .then((response) => response.json())
       .then((data) => {
         setSelectedNote(data.note);
@@ -76,7 +78,7 @@ function App() {
   const updateNote = (event) => {
     event.preventDefault();
 
-    fetch(`http://127.0.0.1:8000/notes/${editingNote.id}`, {
+    fetch(`${API_URL}/notes/${editingNote.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +107,7 @@ function App() {
       return;
     }
 
-    fetch(`http://127.0.0.1:8000/notes/${noteId}`, {
+    fetch(`${API_URL}/notes/${noteId}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
